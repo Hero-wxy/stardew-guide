@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>泰拉瑞亚全流程攻略站</title>
+<style>
+/* ===== 设计令牌：矿洞暗色系 ===== */
+:root{
+  --bg:#171310;
+  --bg2:#1f1915;
+  --panel:#261f19;
+  --panel2:#2d251e;
+  --line:#3d3226;
+  --text:#ece5d8;
+  --muted:#a99a87;
+  --gold:#e8b84b;
+  --gold-soft:#f5d98a;
+  --teal:#4fd1c5;
+  --teal-soft:#8fe3da;
+  --red:#e0624a;
+  --red-soft:#f2a292;
+  --green:#7bc96f;
+  --purple:#b28dff;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  background:radial-gradient(1200px 600px at 80% -10%, #2a2117 0%, var(--bg) 55%),
+             linear-gradient(180deg,var(--bg) 0%, #100d0a 100%);
+  color:var(--text);line-height:1.75;font-size:16px;
+}
+::selection{background:var(--gold);color:#1a1410;}
+a{color:var(--teal);text-decoration:none;}
+a:hover{color:var(--teal-soft);}
+img{max-width:100%;}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px;}
+
+/* ===== 顶部进度条 ===== */
+#progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--teal));width:0;z-index:99;}
+
+/* ===== 顶部导航 ===== */
+.topbar{position:sticky;top:0;z-index:90;background:rgba(23,19,16,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+.topbar .inner{display:flex;align-items:center;gap:18px;max-width:1080px;margin:0 auto;padding:0 20px;height:56px;}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px;letter-spacing:.5px;color:var(--gold-soft);white-space:nowrap;}
+.brand svg{flex:none;}
+.topnav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;}
+.topnav::-webkit-scrollbar{display:none;}
+.topnav a{color:var(--muted);padding:7px 11px;border-radius:6px;font-size:14px;white-space:nowrap;}
+.topnav a:hover{color:var(--text);background:var(--panel2);}
+.topnav a.on{color:var(--gold-soft);background:var(--panel2);}
+
+/* ===== Hero ===== */
+.hero{position:relative;overflow:hidden;padding:70px 0 58px;text-align:center;border-bottom:1px solid var(--line);}
+.hero::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(500px 240px at 30% 10%, rgba(232,184,75,.10) 0%, transparent 60%),
+  radial-gradient(420px 220px at 75% 20%, rgba(79,209,197,.10) 0%, transparent 60%);pointer-events:none;}
+.hero .wrap{position:relative;}
+.hero .tag{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:clamp(34px,6vw,56px);font-weight:900;letter-spacing:1px;color:#fff;line-height:1.15;}
+.hero h1 .g{color:var(--gold-soft);}
+.hero h1 .t{color:var(--teal-soft);}
+.hero .sub{color:var(--muted);max-width:640px;margin:18px auto 0;font-size:16px;}
+.hero .meta{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:26px;color:var(--gold-soft);font-size:14px;}
+.hero .meta span{display:inline-flex;gap:7px;align-items:center;background:var(--panel);border:1px solid var(--line);padding:7px 14px;border-radius:20px;}
+.hero .meta b{color:#fff;font-family:var(--mono);}
+
+/* ===== 区块 ===== */
+section{padding:58px 0;border-bottom:1px solid var(--line);}
+.s-head{margin-bottom:26px;}
+.s-head .kicker{font-size:13px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;}
+.s-head h2{font-size:clamp(24px,4vw,32px);font-weight:900;color:#fff;margin-top:6px;display:flex;align-items:center;gap:12px;}
+.s-head h2 .n{color:var(--gold);font-family:var(--mono);font-size:.7em;}
+.s-head p{color:var(--muted);margin-top:8px;max-width:760px;}
+
+.grid{display:grid;gap:16px;}
+.g2{grid-template-columns:1fr 1fr;}
+.g3{grid-template-columns:repeat(3,1fr);}
+.g4{grid-template-columns:repeat(4,1fr);}
+@media(max-width:860px){.g4{grid-template-columns:repeat(2,1fr);}.g3{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.g2,.g3{grid-template-columns:1fr;}}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;}
+.card h3{font-size:17px;color:var(--gold-soft);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.card p{color:var(--muted);font-size:14.5px;}
+.card .big{font-size:22px;font-weight:800;color:#fff;font-family:var(--mono);}
+
+/* ===== 提示框 ===== */
+.box{border-radius:10px;padding:14px 16px;margin:14px 0;font-size:14.5px;border:1px solid;}
+.box .bt{font-weight:800;display:flex;gap:8px;align-items:center;margin-bottom:6px;font-size:15px;}
+.ok{background:rgba(123,201,111,.10);border-color:rgba(123,201,111,.4);}
+.ok .bt{color:var(--green);}
+.warn{background:rgba(232,184,75,.08);border-color:rgba(232,184,75,.42);}
+.warn .bt{color:var(--gold-soft);}
+.danger{background:rgba(224,98,74,.09);border-color:rgba(224,98,74,.45);}
+.danger .bt{color:var(--red-soft);}
+.tip{background:rgba(79,209,197,.07);border-color:rgba(79,209,197,.4);}
+.tip .bt{color:var(--teal-soft);}
+
+/* ===== 时间轴 ===== */
+.timeline{display:grid;grid-template-columns:120px 26px 1fr;row-gap:0;column-gap:14px;margin-top:10px;}
+@media(max-width:640px){.timeline{grid-template-columns:84px 20px 1fr;column-gap:10px;}}
+.tl-row{display:contents;}
+.tl-time{grid-column:1;padding:16px 0;text-align:right;font-family:var(--mono);font-weight:800;color:var(--gold);font-size:15px;position:relative;}
+.tl-dot{grid-column:2;position:relative;}
+.tl-dot::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--line);transform:translateX(-50%);}
+.tl-dot .c{position:absolute;top:22px;left:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:var(--gold);z-index:1;box-shadow:0 0 0 4px var(--panel),0 0 0 5px var(--line);}
+.tl-body{grid-column:3;padding:12px 0 18px;}
+.tl-body h4{color:#fff;font-size:16px;margin-bottom:4px;}
+.tl-body .desc{color:var(--muted);font-size:14px;}
+
+/* ===== 表格 ===== */
+.tbl-wrap{overflow-x:auto;margin:14px 0;border:1px solid var(--line);border-radius:10px;}
+table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:14px;min-width:560px;}
+thead th{background:var(--bg2);color:var(--gold-soft);font-weight:700;text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--line);color:var(--text);vertical-align:top;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:nth-child(even){background:rgba(255,255,255,.015);}
+td .m{color:var(--muted);font-size:13px;}
+
+/* ===== BOSS 卡片 ===== */
+.boss{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+.boss-h{display:flex;align-items:center;gap:14px;padding:16px 18px;background:linear-gradient(90deg,var(--panel2),var(--panel));cursor:pointer;user-select:none;}
+.boss-h:hover{background:var(--panel2);}
+.boss-h .ico{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:none;}
+.boss-h .tt{flex:1;}
+.boss-h .tt h4{color:#fff;font-size:17px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.boss-h .tt .ph{font-size:12px;color:var(--muted);font-family:var(--mono);}
+.boss-h .chev{color:var(--muted);transition:transform .2s;flex:none;}
+.boss.open .boss-h .chev{transform:rotate(180deg);}
+.boss-b{display:none;padding:6px 20px 20px;border-top:1px solid var(--line);}
+.boss.open .boss-b{display:block;}
+.boss-b .row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;}
+@media(max-width:640px){.boss-b .row{grid-template-columns:1fr;}}
+.boss-b .stat{background:var(--bg2);border-radius:9px;padding:12px 14px;}
+.boss-b .stat .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.boss-b .stat .v{font-size:14.5px;color:#fff;margin-top:3px;}
+
+/* ===== 进度清单 ===== */
+.check{display:flex;align-items:flex-start;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 15px;margin-bottom:10px;cursor:pointer;transition:background .15s;}
+.check:hover{background:var(--panel2);}
+.check input{width:19px;height:19px;margin-top:3px;accent-color:var(--gold);flex:none;cursor:pointer;}
+.check .lbl{flex:1;font-size:15px;}
+.check .grp{font-size:12px;color:var(--gold);font-weight:700;display:block;margin-bottom:2px;letter-spacing:.5px;}
+.check.done .lbl{color:var(--muted);text-decoration:line-through;}
+#progbar{height:10px;background:var(--panel2);border:1px solid var(--line);border-radius:20px;overflow:hidden;margin:16px 0 22px;}
+#progbar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--teal));transition:width .3s;}
+
+/* ===== 折叠 FAQ ===== */
+.faq{margin-bottom:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+.faq-q{padding:14px 16px;font-weight:700;color:#fff;cursor:pointer;display:flex;gap:10px;align-items:center;}
+.faq-q .q{color:var(--red-soft);font-family:var(--mono);font-weight:800;}
+.faq-q .chev{margin-left:auto;color:var(--muted);transition:transform .2s;}
+.faq.open .faq-q .chev{transform:rotate(180deg);}
+.faq-a{display:none;padding:0 16px 16px;color:var(--muted);font-size:14.5px;border-top:1px solid var(--line);padding-top:12px;}
+.faq.open .faq-a{display:block;}
+
+/* ===== 底部 ===== */
+footer{padding:40px 0 60px;color:var(--muted);text-align:center;font-size:14px;}
+#top{position:fixed;right:22px;bottom:22px;width:44px;height:44px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);color:var(--gold-soft);font-size:20px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:80;}
+#top:hover{background:var(--line);}
+
+ul.li{list-style:none;}
+ul.li li{padding-left:22px;position:relative;margin-bottom:7px;color:var(--text);font-size:15px;}
+ul.li li::before{content:"";position:absolute;left:4px;top:11px;width:7px;height:7px;border-radius:2px;background:var(--gold);transform:rotate(45deg);}
+ul.li li .m{color:var(--muted);}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="topbar">
+  <div class="inner">
+    <div class="brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" fill="var(--gold)"/><path d="M12 2v20M3 7l9 5 9-5" stroke="#1a1410" stroke-width="1.4"/><circle cx="12" cy="12" r="2.4" fill="#1a1410"/></svg>
+      泰拉瑞亚攻略
+    </div>
+    <nav class="topnav" id="topnav">
+      <a href="#start">新手入门</a>
+      <a href="#road">流程时间轴</a>
+      <a href="#boss">BOSS全攻略</a>
+      <a href="#gear">装备矿物</a>
+      <a href="#npc">NPC入住</a>
+      <a href="#build">建筑基地</a>
+      <a href="#event">事件</a>
+      <a href="#faq">常见问题</a>
+      <a href="#check">进度清单</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="tag">· Terraria · 全流程 · 新手到毕业 ·</div>
+    <h1>泰拉瑞亚 <span class="g">全流程</span> 深度攻略</h1>
+    <p class="sub">从第一天踏入世界，到击败月球领主。按阶段推进的完整路线、全 BOSS 打法、装备与矿物图鉴、NPC 入住、建筑要点与常见问题排查，一页全收。</p>
+    <div class="meta">
+      <span>难度 <b>经典 / 专家 / 大师</b></span>
+      <span>职业 <b>近战 / 远程 / 法师 / 召唤</b></span>
+      <span>流程 <b>肉山前 → 困难模式 → 毕业</b></span>
+    </div>
+  </div>
+</div>
+
+<!-- 进度清单放在第一个，方便快速进入 -->
+<section id="check">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="kicker">Checklist</div>
+      <h2><span class="n">00</span> 全流程进度清单</h2>
+      <p>按主线顺序排列，打勾自动保存到本机浏览器。关掉页面再打开依然保留进度。</p>
+    </div>
+    <div id="progbar"><span id="progfill"></span></div>
+    <div id="checklist"></div>
+  </div>
+</section>
+
+<section id="start">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="kicker">Getting Started</div>
+      <h2><span class="n">01</span> 新手入门：从第一天开始</h2>
+      <p>泰拉瑞亚不是单纯的挖矿游戏——它是挖矿、战斗、建造、探索、Boss 挑战五位一体的沙盒冒险。先弄懂三件事：这游戏要干嘛、有哪些难度与职业、第一天到底该干什么。</p>
+    </div>
+
+    <div class="grid g4" style="margin-bottom:18px;">
+      <div class="card"><div class="big">2D</div><h3>游戏定位</h3><p>横版 2D 沙盒，地图无限，地下深处隐藏着全部主线和 Boss。</p></div>
+      <div class="card"><div class="big">8+</div><h3>大 Boss 数量</h3><p>主线 Boss 十余个，另有事件 Boss 与可选 Boss。</p></div>
+      <div class="card"><div class="big">3</div><h3>世界难度</h3><p>经典 / 专家 / 大师，影响敌人强度与掉落。</p></div>
+      <div class="card"><div class="big">4</div><h3>主流职业</h3><p>近战 / 远程 / 法师 / 召唤，决定你的配装方向。</p></div>
+    </div>
+
+    <h3 style="color:var(--gold-soft);font-size:19px;margin:24px 0 10px;">一、建号与难度选择</h3>
+    <div class="grid g2">
+      <div class="card">
+        <h3>角色难度（软核/中核/硬核）</h3>
+        <ul class="li">
+          <li><b>软核（推荐新手）</b>：死亡只掉钱，不掉装备。最宽容，适合第一次玩。<span class="m">—— 新手首选</span></li>
+          <li><b>中核</b>：死亡会掉落身上所有物品，需要跑尸捡回。</li>
+          <li><b>硬核</b>：死亡即永久删除角色，极难，不建议首次游玩。</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>世界难度（创建世界时选）</h3>
+        <ul class="li">
+          <li><b>经典</b>：标准难度，默认体验。</li>
+          <li><b>专家</b>：敌人更强、血量更高，Boss 掉落专属专家饰品。<span class="m">—— 老手向</span></li>
+          <li><b>大师</b>：最强难度，敌人极强，额外宠物与专属坐骑掉落。</li>
+        </ul>
+        <div class="box warn" style="margin-top:12px;"><div class="bt">注意</div>首次游玩强烈建议：<b>软核角色 + 经典世界</b>。先熟悉流程，以后再挑战更高难度。</div>
+      </div>
+    </div>
+
+    <h3 style="color:var(--gold-soft);font-size:19px;margin:24px 0 10px;">二、职业怎么选</h3>
+    <div class="grid g4">
+      <div class="card"><h3>近战 Melee</h3><p>高防高血，剑与近身武器。前期容错最高，推荐新手。<span class="m">代表：永夜刃、泰拉刃</span></p></div>
+      <div class="card"><h3>远程 Ranged</h3><p>弓、枪、发射器。拉开距离输出，需备弹药。<span class="m">代表：熔火之怒、圣诞机关枪</span></p></div>
+      <div class="card"><h3>法师 Mage</h3><p>魔法武器消耗法力值，DPS 高但需回蓝。<span class="m">代表：宝石法杖、幽灵法杖</span></p></div>
+      <div class="card"><h3>召唤 Summoner</h3><p>召唤宠物替你打，本体躲闪走位。<span class="m">代表：史莱姆法杖、星辰龙</span></p></div>
+    </div>
+    <div class="box tip"><div class="bt">建议</div>新手不必死磕单一职业。前期资源少，哪个武器顺手用哪个；中期开始有了流派饰品，再专精一个方向。</div>
+
+    <h3 style="color:var(--gold-soft);font-size:19px;margin:24px 0 10px;">三、第一天该干什么（10 步开局）</h3>
+    <div class="box ok"><div class="bt">第一步：先活下来</div>白天先砍树（用斧头砍树干），搜集约 40-60 个木头。夜晚 7 点后僵尸和恶魔眼会出现，没有房子会死。</div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>白天 · 打基础</h3>
+        <ul class="li">
+          <li><b>1. 砍树</b>：攒木头，这是所有建筑和工具的基础。</li>
+          <li><b>2. 做工作台</b>：10 个木头合成，所有手工合成都靠它。</li>
+          <li><b>3. 做武器</b>：工作台做木剑，初期防身。</li>
+          <li><b>4. 造房屋</b>：建一间能住的小屋（见「建筑基地」章）。</li>
+          <li><b>5. 找向导</b>：出生点附近有向导 NPC，他会告诉你配方和 Boss 召唤方式，多和他对话。</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>夜晚 · 稳局面</h3>
+        <ul class="li">
+          <li><b>6. 躲屋里</b>：关上门，夜晚怪物在屋外，别出去硬刚。</li>
+          <li><b>7. 做火把</b>：木头+凝胶（史莱姆掉落）合成，照亮室内。</li>
+          <li><b>8. 搭熔炉</b>：先采矿，再用石头+木头做熔炉，能烧矿石。</li>
+          <li><b>9. 做铁砧</b>：有了铁/铅锭后做铁砧，能合成高级工具。</li>
+          <li><b>10. 规划</b>：第二天去挖矿、去海边找渔夫、去地表收集资源。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="box danger"><div class="bt">新手最大误区</div>不要一开始就盲目往地下猛挖。<b>先把地面基地建好、把工具升级到铁/金级</b>，再深入地下。越深怪物越强，前期送死只会掉钱。</div>
+  </div>
+</section>
+
+<section id="road">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="kicker">Roadmap</div>
+      <h2><span class="n">02</span> 全流程推进时间轴</h2>
+      <p>泰拉瑞亚以「血肉墙」为分界：击败它之前是<b>肉山前（Pre-Hardmode）</b>，之后进入<b>困难模式（Hardmode）</b>。下面按主线顺序列出每一阶段的该做的事与里程碑。</p>
+    </div>
+
+    <h3 style="color:var(--teal-soft);font-size:19px;margin-bottom:6px;">阶段一 · 肉山前（新手到第一个大 Boss）</h3>
+    <div class="timeline">
+      <div class="tl-row"><div class="tl-time">第 1 天</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>建家 + 基础工具</h4><div class="desc">砍树建小屋、工作台、木剑，安置向导。目标：活过第一夜。</div></div></div>
+      <div class="tl-row"><div class="tl-time">第 2-4 天</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>挖矿升级</h4><div class="desc">采铜/锡、铁/铅、银/钨、金/铂金矿，依次升级镐、斧、剑。做熔炉、铁砧。</div></div></div>
+      <div class="tl-row"><div class="tl-time">前期 Boss</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>克苏鲁之眼（首个 Boss）</h4><div class="desc">夜晚用「可疑眼球」召唤，或收集晶状体自动触发。掉落材料做暗影/猩红装备。</div></div></div>
+      <div class="tl-row"><div class="tl-time">中期</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>下矿洞 + 猩红/腐化之地</h4><div class="desc">前往地下猩红（红）或腐化（紫）之地，打克苏鲁之脑 / 世界吞噬者，获取暗影鳞片做更优装备。</div></div></div>
+      <div class="tl-row"><div class="tl-time">中期 Boss</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>蜂后 → 骷髅王</h4><div class="desc">在丛林召唤蜂后拿蜜蜂装备；夜晚去地牢入口找老人对话召唤骷髅王，通关后进地牢拿黄金宝箱与哥布林工匠。</div></div></div>
+      <div class="tl-row"><div class="tl-time">肉山前巅峰</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>地狱 · 熔岩装备</h4><div class="desc">挖到地狱，采集狱石（陨铁），做成熔岩镐、熔岩套与暗影/熔岩武器，这是肉山前最强装备。</div></div></div>
+      <div class="tl-row"><div class="tl-time">转折点</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>击败血肉墙 → 进入困难模式</h4><div class="desc">把「向导巫毒娃娃」扔进地狱的岩浆（或用巫毒恶魔掉落），击败血肉墙后世界永久改变。</div></div></div>
+    </div>
+
+    <h3 style="color:var(--teal-soft);font-size:19px;margin:34px 0 6px;">阶段二 · 困难模式（游戏真正开始）</h3>
+    <div class="box danger" style="margin-top:8px;"><div class="bt">重要转折</div>击败血肉墙后，世界会发生这些变化，务必提前准备：<br>① 世界被硬核模式污染，猩红/腐化会快速蔓延，三神之柱和更高阶怪物出现；<br>② 出现新三矿（钴蓝/钯金 → 秘银/山铜 → 精金/钛金），需要用「神锤」敲碎恶魔/猩红祭坛才能解锁；<br>③ 原武器基本作废，必须重新做装备；<br>④ 出现新的 NPC、事件与更多玩法。</div>
+    <div class="timeline">
+      <div class="tl-row"><div class="tl-time">困难起步</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>敲祭坛 + 挖新三矿</h4><div class="desc">用血肉墙掉落的神锤敲祭坛，解锁钴蓝/钯金、秘银/山铜、精金/钛金，逐级升级工具与装备。</div></div></div>
+      <div class="tl-row"><div class="tl-time">三机械 Boss</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>毁灭者 → 双子魔眼 → 机械骷髅王</h4><div class="desc">用机械碎片在夜晚召唤。依次击败后获得神圣锭，做神圣装备，并解锁后续。</div></div></div>
+      <div class="tl-row"><div class="tl-time">中期 Boss</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>世纪之花（丛林之花）</h4><div class="desc">击败三机械后，丛林深处会长出花苞，击碎召唤世纪之花。掉神圣锭，是困难模式关键转折。</div></div></div>
+      <div class="tl-row"><div class="tl-time">后期</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>石巨人（丛林神庙）</h4><div class="desc">用丛林神庙的电池在神庙祭坛召唤石巨人，掉落最强材料之一。</div></div></div>
+      <div class="tl-row"><div class="tl-time">可选 Boss</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>猪龙鱼公爵</h4><div class="desc">在海洋用「松露虫」钓鱼召唤，掉强力武器，是毕业前的重要战力补充。</div></div></div>
+      <div class="tl-row"><div class="tl-time">毕业前</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>拜月教邪教徒 → 天界柱</h4><div class="desc">击败地牢顶部的邪教徒后，触发月亮事件，出现四根天界柱（日耀/星云/星尘/漩涡），逐一击破。</div></div></div>
+      <div class="tl-row"><div class="tl-time">最终 Boss</div><div class="tl-dot"><span class="c"></span></div><div class="tl-body"><h4>月球领主（最终 Boss）</h4><div class="desc">击败四柱后，月球领主降临，这是游戏最终挑战。击败后通关，可用信标随时再挑战。</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="boss">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="kicker">Boss Guide</div>
+      <h2><span class="n">03</span> 全 BOSS 攻略（点击展开）</h2>
+      <p>按主线推进顺序排列。每个 Boss 都给出：召唤方式、推荐装备与场地、核心打法、注意事项、主要掉落。点击卡片展开查看。</p>
+    </div>
+
+    <!-- ===== 肉山前 Boss ===== -->
+    <h3 style="color:var(--teal-soft);font-size:19px;margin:10px 0 16px;">肉山前 Boss</h3>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(224,98,74,.15);color:var(--red-soft);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="10" r="1.2" fill="currentColor"/><circle cx="15" cy="10" r="1.2" fill="currentColor"/></svg>
+        </div>
+        <div class="tt"><h4>克苏鲁之眼 <span class="ph">Eye of Cthulhu · 夜晚 Boss</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>新手的第一个大 Boss，主要用来熟悉战斗节奏。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">夜晚使用「可疑眼球」（6 个晶状体+6 个木头在恶魔祭坛合成）；或新角色游戏初期会自然触发一次。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">铁/银/金套 + 熔岩/金剑，至少 30 个治疗药水，平坦开阔战斗场地。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">冲撞时横向跑位躲避；半血后进入第二形态会加速并冲刺，保持距离、跳跃躲避。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">只能夜晚存在，天亮没打完它会狂暴飞走；半血后冲刺变快，别贪刀。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>恶魔/猩红矿、暗影/猩红鳞片、克苏鲁面具。材料用于做暗影套/猩红套。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(178,141,255,.15);color:var(--purple);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M4 18c2-4 4-6 8-6s6 2 8 6l-3-1c-1.5-2-3-2-5-2s-3.5 0-5 2l-3 1z"/></svg>
+        </div>
+        <div class="tt"><h4>史莱姆王 <span class="ph">King Slime · 史莱姆之王</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>较弱的 Boss，主要用来熟悉多阶段战斗。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">用「史莱姆王冠」（99 个凝胶+金/铂金锭在恶魔祭坛合成）；或史莱姆雨事件中击杀 150 只史莱姆后自然出现。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">基础近战/远程武器即可，需要一定跳跃能力躲避。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">它会跳来跳去，落地时攻击；半血后会分裂成小史莱姆，优先清小怪再打本体。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">会在白天也出现；跳跃力不够时容易被压到，可搭高台站桩。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>凝胶、史莱姆钩（抓钩）、史莱姆王坐骑、忍者装束。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(79,209,197,.15);color:var(--teal-soft);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18v6H3zM3 13h18v6H3z" opacity=".4"/><circle cx="7" cy="8" r="2"/><circle cx="17" cy="8" r="2"/><circle cx="7" cy="16" r="2"/><circle cx="17" cy="16" r="2"/></svg>
+        </div>
+        <div class="tt"><h4>世界吞噬者 <span class="ph">Eater of Worlds · 腐化之地 Boss</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>一个由多个节组成的蠕虫型 Boss，只在腐化（紫）之地出现。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">在腐化之地使用「蠕虫诱饵」（腐肉+毒粉合成）；或在地下腐化之地打碎 3 个「暗影珠」后自动出现。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">远程或范围武器（弓、炸弹、回旋镖）优先，因为它会钻地。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">它会冲出地面冲锋，钻地时难以攻击。用多段伤害武器（如链锯）或范围武器在它露头时打。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">蠕虫由多个节组成，击杀每个节都会掉材料；中途逃跑会重置，务必一次打完。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>暗影鳞片、腐肉、恶魔矿。暗影鳞片用于做暗影套与暗影武器。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(224,98,74,.15);color:var(--red-soft);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 10l3-3 3 3M9 14l3 3 3-3" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+        </div>
+        <div class="tt"><h4>克苏鲁之脑 <span class="ph">Brain of Cthulhu · 猩红之地 Boss</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>猩红（红）之地专属 Boss，结构特殊，分为多个阶段。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">在猩红之地使用「血内脏」（脊椎骨+毒粉合成）；或打碎 3 个猩红之心后自动出现。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">范围攻击（炸弹、多段伤害武器）+ 较高移动速度。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">第一阶段本体无敌，先清理围绕它的小怪（克苏鲁仆从）；清完进入第二阶段本体才可伤害。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">第二阶段它会瞬移冲撞，走位躲避；建议搭两层平台便于闪避。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>猩红鳞片、脊椎骨、猩红矿。用于做猩红套。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(232,184,75,.15);color:var(--gold-soft);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 5.4 5.6.5-4.2 3.8 1.2 5.6-5-3-5 3 1.2-5.6L4 7.9l5.6-.5z"/></svg>
+        </div>
+        <div class="tt"><h4>蜂后 <span class="ph">Queen Bee · 丛林 Boss</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>丛林地下的 Boss，掉蜜蜂主题的强力武器与饰品。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">在丛林使用「憎恶的蜂蜜」（蜂巢块+蜂蜜瓶+蜂王浆合成）；或破坏丛林地下的「蜜蜂巢」。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">熔岩/暗影套 + 远程武器或蜜蜂武器。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">它会冲撞并召唤蜜蜂，躲在蜂巢里打；注意别被它的穿刺攻击打中。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">丛林地形复杂，建议提前清理战斗场地；蜜蜂会追人，优先清理。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>蜜蜂枪、蜜蜂法杖、蜜蜂护甲、蜂王浆（强力增益饰品）。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(178,141,255,.15);color:var(--purple);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 17v5M8 22h8" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+        </div>
+        <div class="tt"><h4>骷髅王 <span class="ph">Skeletron · 地牢守卫</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>夜晚在地牢入口出现的 Boss，击败后才能安全进入地牢。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">夜晚到地牢入口，与「老爷爷」对话选择「诅咒」（curse），他就会变成骷髅王。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">熔岩套或暗影套 + 强力远程武器（如熔火之怒）+ 充足治疗药水。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">先打掉两只手（优先），再打头部。手会甩出来攻击，头部旋转冲锋。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">必须在天亮前打完，否则它会狂暴，一击必杀；建议夜晚尽早召唤。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>击败后可安全进入地牢，获得黄金宝箱钥匙与哥布林工匠 NPC。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(224,98,74,.15);color:var(--red-soft);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 3h8l2 8-6 10-6-10 2-8z" opacity=".5"/><path d="M12 3v18" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="tt"><h4>血肉墙 <span class="ph">Wall of Flesh · 肉山 · 困难模式开关</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>游戏最重要的转折 Boss。击败它，世界进入困难模式。这是肉山前难度最高的挑战。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">在地狱把「向导巫毒娃娃」扔进岩浆（娃娃由巫毒恶魔掉落）；扔娃娃前向导必须在场。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">熔岩套 + 熔火之怒/暗影武器 + 大量治疗药水 + 长距离地狱平台。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">它从地狱一端横推过来，只能向后跑。边退边打它眼睛和嘴；清理沿途小怪，别停下。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">必须提前铺一条很长的地狱平台跑道；装备没成型千万别打，否则会被追着碾死。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>神锤（敲祭坛）、恶魔矿、血肉质（困难模式材料）、日耀弓等强力武器。</div>
+        <div class="box warn"><div class="bt">准备清单（重要）</div>打血肉墙前务必确认：① 长距离地狱跑道；② 熔岩套+远程武器；③ 50+ 治疗药水；④ 备好大量火把与平台材料。一旦击败，世界永久改变，无法退回。</div>
+      </div>
+    </div>
+
+    <!-- ===== 困难模式 Boss ===== -->
+    <h3 style="color:var(--teal-soft);font-size:19px;margin:26px 0 16px;">困难模式 Boss</h3>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(79,209,197,.15);color:var(--teal-soft);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M4 12h16M4 12l3-3M4 12l3 3M20 12l-3-3M20 12l-3 3" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="tt"><h4>毁灭者 <span class="ph">The Destroyer · 机械蠕虫</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>三机械 Boss 之一，外形是巨大的金属蠕虫，在夜晚出现。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">夜晚使用「机械蠕虫」（铁锭+机械碎片合成）。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">钴蓝/钯金套 + 远程/范围武器，伤害足够的话可快速通关。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">它会钻地冲锋，用范围武器（如大炮、爆炸物）或高 DPS 武器打它钻出地面的部分。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">半血后会分裂；它的身体节段很多，击杀每个节都掉机械碎片。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>机械碎片、神圣锭（关键材料）。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(232,184,75,.15);color:var(--gold-soft);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="9" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="15" cy="9" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 13v4M15 13v4M6 20h12" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="tt"><h4>双子魔眼 <span class="ph">The Twins · 机械恶魔眼</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>两个机械恶魔眼组成的 Boss，分别有不同攻击模式，夜晚出现。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">夜晚使用「机械眼球」（晶状体+铁锭+机械碎片合成）。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">钴蓝/钯金套 + 远程武器 + 治疗药水。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">两只眼睛分别有不同攻击：一只激光+冲撞，一只喷火。优先集中火力打死一只，再打另一只。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">建议搭高台或使用抓钩保持机动，两只同时打很难躲。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>机械碎片、神圣锭。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(178,141,255,.15);color:var(--purple);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" opacity=".4"/><circle cx="12" cy="16" r="4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="tt"><h4>机械骷髅王 <span class="ph">Skeletron Prime · 机械头</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>骷髅王的机械强化版，装备更强，有更多攻击方式，夜晚出现。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">夜晚使用「机械骷髅头」（铁锭+骨头+机械碎片合成）。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">钴蓝/钯金套或更好 + 远程/近战强力武器。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">同样先打掉手臂（它的激光、炸弹等攻击都靠手臂），再打头部。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">天亮会狂暴一击必杀，务必夜晚打完；用远程武器在远距离风筝。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>机械碎片、神圣锭。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(224,98,74,.15);color:var(--red-soft);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c5 2 7 6 7 10 0 4-3 7-7 7s-7-3-7-7c0-4 2-8 7-10z" opacity=".6"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="tt"><h4>世纪之花 <span class="ph">Plantera · 丛林之花</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>困难模式中期的关键 Boss，只在丛林深处出现，击败它解锁大量后期玩法。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">击败三机械 Boss 后，丛林地下会随机长出「花苞」，打碎花苞即召唤世纪之花。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">神圣套 + 强力武器（泰拉刃、幽灵法杖等）+ 丛林内建好战斗场地。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">它会发射种子弹幕并伸出藤蔓攻击。半血后进入第二形态，速度加快且钻地。围绕丛林地形风筝。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">必须在丛林环境内打，离开丛林它会狂暴。提前清出一片开阔战斗区。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>神圣锭、世纪之花会掉落「神庙钥匙」用于开启丛林神庙。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(79,209,197,.15);color:var(--teal-soft);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 20L3 4l9 6 9-6-3 16H6z" opacity=".5"/><path d="M12 10l4 8-8 0z" fill="currentColor"/></svg>
+        </div>
+        <div class="tt"><h4>石巨人 <span class="ph">Golem · 丛林神庙守卫</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>位于丛林神庙的 Boss，击败世纪之花后用神庙钥匙开启神庙进入。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">在神庙内的祭坛上放置「神庙电池」（神庙内宝箱和怪物掉落），即可召唤石巨人。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">神圣套或更好 + 强力近战/远程武器。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">它会发射激光、冲撞并召唤小怪。站在祭坛上方平台，用远程武器风筝。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">神庙内空间狭小，建议先把神庙内部清理拓宽成战斗场地。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>石巨人会掉落最顶级的材料与武器配方所需物品。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(178,141,255,.15);color:var(--purple);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 20c4 0 7-3 7-7 0-3-2-5-7-5s-7 2-7 5c0 4 3 7 7 7z"/><path d="M12 2v4M12 20v2" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="tt"><h4>猪龙鱼公爵 <span class="ph">Duke Fishron · 可选海洋 Boss</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>可选的强力 Boss，掉落的武器是毕业前的顶级战力，但难度较高。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">在海洋用「松露虫」作鱼饵钓鱼，即可召唤猪龙鱼公爵。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">神圣/幽灵套 + 强力武器，需要极佳的走位。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">它会高速冲撞并发射龙卷风，注意躲避。半血后攻击模式强化。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">离开海洋它会狂暴；掉落物极强，建议毕业前挑战。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>猪龙鱼钩、猪龙鱼鱼叉等强力武器与专属饰品。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(232,184,75,.15);color:var(--gold-soft);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l7 3v6c0 5-3 9-7 11-4-2-7-6-7-11V5z"/><path d="M8 9h8M8 13h8" stroke="#1a1410" stroke-width="1.4"/></svg>
+        </div>
+        <div class="tt"><h4>拜月教邪教徒 <span class="ph">Lunatic Cultist · 地牢顶端</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>击败石巨人后，地牢顶部的入口会出现拜月教邪教徒，是进入最终 Boss 前的守门人。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">击败石巨人后，前往地牢顶部的传送门，与拜月教邪教徒战斗。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">毕业级装备（幽灵/星云/甲虫套等）+ 顶级武器。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">它会施法、召唤复制体与陨石弹幕。需分辨真假身，集中攻击真身。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">击败它后触发月亮事件，出现四根天界柱，需要逐一击破。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>击败后触发月亮事件，是通往最终 Boss 的必要步骤。</div>
+      </div>
+    </div>
+
+    <div class="boss">
+      <div class="boss-h">
+        <div class="ico" style="background:rgba(224,98,74,.15);color:var(--red-soft);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="tt"><h4>月球领主 <span class="ph">Moon Lord · 最终 Boss</span></h4></div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="boss-b">
+        <p>泰拉瑞亚最终 Boss，游戏通关的终点。击败它即通关，之后可用信标随时再挑战。</p>
+        <div class="row">
+          <div class="stat"><div class="k">召唤方式</div><div class="v">击败四根天界柱（日耀/星云/星尘/漩涡）后，月球领主自动降临。</div></div>
+          <div class="stat"><div class="k">推荐装备</div><div class="v">毕业级套（星云/幽灵/甲虫/日耀）+ 顶级武器 + 大量治疗与增益药水。</div></div>
+          <div class="stat"><div class="k">核心打法</div><div class="v">它有多个攻击部位（手、眼睛、第三只眼）。优先攻击它的两个手和第三只眼，走位躲避激光。</div></div>
+          <div class="stat"><div class="k">注意</div><div class="v">最终 Boss，攻击极强。搭高台、备足药水、可能需多次尝试，这是最难的一战。</div></div>
+        </div>
+        <div class="box ok"><div class="bt">主要掉落</div>月光（最强材料之一）、最强装备碎片、通关成就。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gear">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="kicker">Gear & Ores</div>
+      <h2><span class="n">04</span> 装备升级路线与矿物图鉴</h2>
+      <p>按阶段列出装备升级主线与各阶段推荐武器。矿物方面区分「肉山前」和「困难模式」两大体系。</p>
+    </div>
+
+    <h3 style="color:var(--teal-soft);font-size:19px;margin-bottom:14px;">装备升级主线（肉山前）</h3>
+    <div class="tbl-wrap">
+    <table>
+      <colgroup><col style="width:22%"><col style="width:26%"><col style="width:30%"><col style="width:22%"></colgroup>
+      <thead><tr><th>阶段</th><th>推荐套装</th><th>推荐武器</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>开局</td><td>木甲 / 无</td><td>木剑、铜剑</td><td>第一天过渡用。</td></tr>
+        <tr><td>早期</td><td>铜/锡套、铁/铅套</td><td>铁/铅剑、铁弓</td><td>挖矿即可获得。</td></tr>
+        <tr><td>中期</td><td>银/钨套、金/铂金套</td><td>金/铂金剑、强化弓</td><td>第二个采矿阶段，能应对前几个 Boss。</td></tr>
+        <tr><td>进阶</td><td>暗影套 / 猩红套</td><td>暗影武器 / 猩红武器</td><td>用克苏鲁之眼及腐化/猩红 Boss 材料制作。</td></tr>
+        <tr><td>肉山前巅峰</td><td><b>熔岩套</b></td><td>熔火之怒、永夜刃</td><td>地狱狱石制作，肉山前最强，打血肉墙必备。</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3 style="color:var(--teal-soft);font-size:19px;margin:28px 0 14px;">装备升级主线（困难模式）</h3>
+    <div class="tbl-wrap">
+    <table>
+      <colgroup><col style="width:24%"><col style="width:26%"><col style="width:28%"><col style="width:22%"></colgroup>
+      <thead><tr><th>阶段</th><th>推荐套装</th><th>推荐武器</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>困难起步</td><td>钴蓝/钯金套</td><td>钴蓝/钯金武器</td><td>敲祭坛后挖的新三矿第一级。</td></tr>
+        <tr><td>第二阶段</td><td>秘银/山铜套</td><td>秘银/山铜武器</td><td>第二级矿，装备显著提升。</td></tr>
+        <tr><td>第三阶段</td><td>精金/钛金套</td><td>精金/钛金武器</td><td>第三级矿，能挑战三机械 Boss。</td></tr>
+        <tr><td>中期</td><td><b>神圣套</b></td><td>泰拉刃、幽灵法杖等</td><td>用三机械 Boss 掉落的神圣锭制作，中期核心。</td></tr>
+        <tr><td>后期</td><td>幽灵套 / 星云套 / 甲虫套 / 日耀套</td><td>毕业级武器</td><td>用丛林、天界柱材料制作，最终 Boss 用。</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3 style="color:var(--teal-soft);font-size:19px;margin:28px 0 14px;">矿物图鉴</h3>
+    <div class="grid g2">
+      <div class="card">
+        <h3>肉山前矿物（按稀有度）</h3>
+        <table style="min-width:0;">
+          <colgroup><col style="width:34%"><col style="width:33%"><col style="width:33%"></colgroup>
+          <thead><tr><th>矿物</th><th>矿石/锭</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td>铜 Copper</td><td>铜矿 → 铜锭</td><td>基础工具装备</td></tr>
+            <tr><td>锡 Tin</td><td>锡矿 → 锡锭</td><td>铜的替代品（同等级）</td></tr>
+            <tr><td>铁 Iron</td><td>铁矿 → 铁锭</td><td>工具、铁砧</td></tr>
+            <tr><td>铅 Lead</td><td>铅矿 → 铅锭</td><td>铁替代品</td></tr>
+            <tr><td>银 Silver</td><td>银矿 → 银锭</td><td>银级装备</td></tr>
+            <tr><td>钨 Tungsten</td><td>钨矿 → 钨锭</td><td>银替代品</td></tr>
+            <tr><td>金 Gold</td><td>金矿 → 金锭</td><td>金级装备</td></tr>
+            <tr><td>铂金 Platinum</td><td>铂金矿 → 铂金锭</td><td>金替代品</td></tr>
+            <tr><td>恶魔矿 / 猩红矿</td><td>矿石 → 锭</td><td>暗影/猩红装备</td></tr>
+            <tr><td>狱石 Meteorite</td><td>狱石 → 熔岩锭</td><td>熔岩套（肉山前最强）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>困难模式矿物（敲祭坛解锁）</h3>
+        <table style="min-width:0;">
+          <colgroup><col style="width:40%"><col style="width:60%"></colgroup>
+          <thead><tr><th>矿物</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td>钴蓝 Cobalt</td><td>困难模式第一级</td></tr>
+            <tr><td>钯金 Palladium</td><td>钴蓝替代品</td></tr>
+            <tr><td>秘银 Mythril</td><td>第二级</td></tr>
+            <tr><td>山铜 Orichalcum</td><td>秘银替代品</td></tr>
+            <tr><td>精金 Adamantite</td><td>第三级</td></tr>
+            <tr><td>钛金 Titanium</td><td>精金替代品</td></tr>
+            <tr><td>叶绿矿 Chlorophyte</td><td>丛林深处，高级饰品用</td></tr>
+            <tr><td>夜明矿 Luminite</td><td>月球领主掉落，最强材料</td></tr>
+          </tbody>
+        </table>
+        <div class="box tip" style="margin-top:12px;"><div class="bt">敲祭坛须知</div>神锤敲碎祭坛后，每次会随机解锁一种矿。敲得越多越深层的矿出现，但每敲一次也会在随机位置生成一块腐化/猩红感染源，务必控制敲的次数。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="npc">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="kicker">NPC</div>
+      <h2><span class="n">05</span> NPC 入住条件全表</h2>
+      <p>每个 NPC 都有入住条件：需要满足「有空房」+「满足特定条件」。空房要求见「建筑基地」章。</p>
+    </div>
+    <div class="tbl-wrap">
+    <table>
+      <colgroup><col style="width:18%"><col style="width:42%"><col style="width:40%"></colgroup>
+      <thead><tr><th>NPC</th><th>入住条件</th><th>主要作用</th></tr></thead>
+      <tbody>
+        <tr><td>向导 Guide</td><td>出生自带</td><td>告诉配方与 Boss 召唤方式</td></tr>
+        <tr><td>商人 Merchant</td><td>拥有至少 50 银币</td><td>出售基础工具、箭、治疗药水</td></tr>
+        <tr><td>护士 Nurse</td><td>商人入住后、拥有至少 1 颗生命水晶</td><td>花金币回血治疗</td></tr>
+        <tr><td>军火商 Arms Dealer</td><td>拥有至少一把枪（如火枪）</td><td>出售枪械与弹药</td></tr>
+        <tr><td>渔夫 Angler</td><td>在海洋边或海滩找到他并对话</td><td>钓鱼任务，奖励钓具与宝箱</td></tr>
+        <tr><td>树妖 Dryad</td><td>击败克苏鲁之眼后</td><td>出售植物种子，提示腐化/猩红情况</td></tr>
+        <tr><td>哥布林工匠 Goblin Tinkerer</td><td>击败哥布林入侵事件后，在地牢附近随机出现，找到并对话</td><td>装备重铸（附魔）、出售改装工具</td></tr>
+        <tr><td>爆破专家 Demolitionist</td><td>拥有炸药或手雷</td><td>出售炸药、手雷</td></tr>
+        <tr><td>染料商 Dye Trader</td><td>拥有奇异草等染料材料</td><td>出售染料与染料工艺</td></tr>
+        <tr><td>发型师 Stylist</td><td>在地牢蜘蛛洞找到并对话</td><td>换发型、染发</td></tr>
+        <tr><td>画家 Painter</td><td>拥有至少 8 种不同的图案墙或画</td><td>出售装饰画与颜料</td></tr>
+        <tr><td>巫师 Wizard</td><td>击败骷髅王后，在洞穴层找到并对话</td><td>出售魔法武器与法力饰品</td></tr>
+        <tr><td>派对女孩 Party Girl</td><td>满足条件后随机入住（前提：军火商+爆破专家+哥布林工匠已入住）</td><td>出售派对装饰、烟火</td></tr>
+        <tr><td>机械师 Mechanic</td><td>在地牢找到并对话</td><td>出售电线、机械装置（电路）</td></tr>
+        <tr><td>蒸汽朋克人 Steampunker</td><td>击败任意一个机械 Boss 后</td><td>出售高级饰品、传送器、防腐喷雾</td></tr>
+        <tr><td>海盗 Pirate</td><td>击败海盗入侵事件后</td><td>出售枪械、海盗装备</td></tr>
+        <tr><td>松露人 Truffle</td><td>困难模式、地表有一块蘑菇生物群系并有空房</td><td>出售蘑菇主题装备</td></tr>
+        <tr><td>机器侠 Cyborg</td><td>击败石巨人后</td><td>出售火箭、机关炮</td></tr>
+        <tr><td>税收官 Tax Collector</td><td>用净化粉净化「痛苦亡魂」后与其对话</td><td>从其他 NPC 收税，玩家可收取金币</td></tr>
+        <tr><td>公主 Princess</td><td>几乎所有 NPC 入住后</td><td>出售稀有装饰品</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="box tip"><div class="bt">入住小技巧</div>想要 NPC 住进来：① 准备空房（符合大小、墙、桌椅、光源、门的房间）；② 满足该 NPC 特定条件；③ 稍等片刻它就会入住。用「房屋查询器」工具可检查房间是否合格。</div>
+  </div>
+</section>
+
+<section id="build">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="kicker">Building</div>
+      <h2><span class="n">06</span> 建筑与基地建设</h2>
+      <p>基地是你所有活动的枢纽。一间合格的 NPC 房屋、合理的布局能大幅提升游戏体验。</p>
+    </div>
+
+    <div class="grid g2">
+      <div class="card">
+        <h3>NPC 合格房屋标准</h3>
+        <ul class="li">
+          <li><b>尺寸</b>：内部至少 <b>10×6</b> 格（宽×高），建议更大。</li>
+          <li><b>墙壁</b>：必须用墙填充，不能全是背景墙或空白。</li>
+          <li><b>桌椅</b>：至少 1 张桌子和 1 把椅子。</li>
+          <li><b>光源</b>：至少 1 个光源（火把、吊灯等）。</li>
+          <li><b>入口</b>：至少 1 个门或平台入口。</li>
+          <li><b>地板</b>：有完整地板，不能是虚空。</li>
+        </ul>
+        <div class="box warn"><div class="bt">常见不合格原因</div>房间太小 / 缺桌椅 / 缺光源 / 没装墙 / 有背景墙但没封顶。用「房屋查询器」一键检测。</div>
+      </div>
+      <div class="card">
+        <h3>基地布局建议</h3>
+        <ul class="li">
+          <li><b>核心区</b>：工作台、熔炉、铁砧、仓库箱集中放置，方便合成。</li>
+          <li><b>储物区</b>：用箱子分类（矿物、材料、药水、装饰），命名清楚。</li>
+          <li><b>NPC 区</b>：给每个 NPC 一间独立房，最好相邻便于购买。</li>
+          <li><b>床</b>：放置床并设为出生点，死亡或睡觉能快速回基地。</li>
+          <li><b>庇护所</b>：关键区域修墙封顶，防止夜晚怪物偷袭。</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="color:var(--gold-soft);font-size:19px;margin:24px 0 12px;">Boss 战斗场地搭建</h3>
+    <div class="grid g3">
+      <div class="card"><h3>平台跑道</h3><p>用平台搭建多层水平跑道，用于风筝 Boss（尤其血肉墙前必须铺长跑道）。</p></div>
+      <div class="card"><h3>开阔广场</h3><p>清空一片平地，铺上火把，用于近战/远程 Boss 战斗，避免地形卡位。</p></div>
+      <div class="card"><h3>药水补给点</h3><p>战斗场旁放箱子装满治疗药水、增益药水，打不过随时回血补药。</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="event">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="kicker">Events</div>
+      <h2><span class="n">07</span> 游戏事件一览</h2>
+      <p>除主线 Boss 外，游戏会触发各种事件，带来独特装备与材料。</p>
+    </div>
+    <div class="tbl-wrap">
+    <table>
+      <colgroup><col style="width:22%"><col style="width:30%"><col style="width:48%"></colgroup>
+      <thead><tr><th>事件</th><th>触发方式</th><th>说明与奖励</th></tr></thead>
+      <tbody>
+        <tr><td>史莱姆雨</td><td>随机天气事件</td><td>大量史莱姆，打 150 只触发史莱姆王。</td></tr>
+        <tr><td>血月 Blood Moon</td><td>随机夜晚</td><td>怪物暴增，僵尸会开门，掉落血之刃等。</td></tr>
+        <tr><td>哥布林入侵</td><td>随机或道具触发</td><td>哥布林进攻，掉哥布林工匠。</td></tr>
+        <tr><td>日食 Solar Eclipse</td><td>困难模式随机白天</td><td>大量强力怪物，掉罗马雕像等稀有物。</td></tr>
+        <tr><td>南瓜月 Pumpkin Moon</td><td>夜晚使用南瓜王娃娃</td><td>大量南瓜怪，掉落南瓜王等。</td></tr>
+        <tr><td>霜月 Frost Moon</td><td>夜晚使用冰雪王娃娃</td><td>冰雪主题敌人，掉霜寒武器。</td></tr>
+        <tr><td>火星入侵 Martian Madness</td><td>困难模式随机</td><td>火星飞碟入侵，掉 Ufo 坐骑等。</td></tr>
+        <tr><td>月亮事件</td><td>击败拜月教邪教徒</td><td>四根天界柱，最终 Boss 前置。</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="box warn"><div class="bt">困难模式注意</div>困难模式后腐化/猩红会持续蔓延，可能吞掉你的丛林和基地。可用「防腐喷雾」或「太阳花」等工具遏制蔓延范围。</div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="kicker">FAQ</div>
+      <h2><span class="n">08</span> 常见问题与故障排查</h2>
+      <p>新手最常遇到的问题，点击展开查看解决办法。</p>
+    </div>
+
+    <div class="faq"><div class="faq-q"><span class="q">Q1</span>打不过某个 Boss，怎么办？<span class="chev">▾</span></div><div class="faq-a">① 检查装备：是否达到该 Boss 对应的套装/武器等级；② 是否备足治疗药水与增益药水；③ 是否搭建了合适的战斗场地；④ 是否了解该 Boss 的攻击模式。按「全 Boss 攻略」章节逐一排查即可。</div></div>
+    <div class="faq"><div class="faq-q"><span class="q">Q2</span>为什么 NPC 不入住？<span class="chev">▾</span></div><div class="faq-a">先确认：① 有空房（用房屋查询器检查是否合格）；② 满足该 NPC 的入住条件（见「NPC 入住条件」表）；③ 稍等片刻。常见错误是房间缺桌椅、光源或墙。</div></div>
+    <div class="faq"><div class="faq-q"><span class="q">Q3</span>腐化/猩红蔓延得越来越快，基地会不会被吞？<span class="chev">▾</span></div><div class="faq-a">会。困难模式后蔓延加快。应对：① 用防腐喷雾（蒸汽朋克人出售）清理；② 在基地周围留出隔离带（挖坑或用不可腐化物填充）；③ 及时清理蔓延源。</div></div>
+    <div class="faq"><div class="faq-q"><span class="q">Q4</span>机械 Boss 怎么召唤？<span class="chev">▾</span></div><div class="faq-a">击败血肉墙进入困难模式后，夜晚用「机械蠕虫」（毁灭者）、「机械眼球」（双子魔眼）、「机械骷髅头」（机械骷髅王）召唤。这些道具用机械碎片在铁砧合成。</div></div>
+    <div class="faq"><div class="faq-q"><span class="q">Q5</span>世纪之花召唤不出来？<span class="chev">▾</span></div><div class="faq-a">必须先击败三机械 Boss。之后在丛林地下层寻找随机生成的「花苞」，用镐打碎花苞即可召唤。若找不到，多在丛林深处探索。</div></div>
+    <div class="faq"><div class="faq-q"><span class="q">Q6</span>游戏卡顿/掉帧，怎么优化？<span class="chev">▾</span></div><div class="faq-a">① 游戏设置里降低画面分辨率与粒子效果；② 关闭光影/背景特效；③ 减少画面内过多火把或方块粒子；④ 更新显卡驱动；⑤ 关闭后台占用软件。</div></div>
+    <div class="faq"><div class="faq-q"><span class="q">Q7</span>角色死了，装备会丢吗？<span class="chev">▾</span></div><div class="faq-a">软核角色死亡只掉金币，装备保留；中核会掉落全部身上物品，需要跑尸捡回；硬核死亡角色永久删除。看你的角色难度设置。</div></div>
+    <div class="faq"><div class="faq-q"><span class="q">Q8</span>怎么快速赚钱？<span class="chev">▾</span></div><div class="faq-a">前期：钓鱼卖鱼、挖矿卖矿、打史莱姆。中期：击败 Boss 掉材料卖钱。后期：制作并出售高级药剂、刷南瓜月/霜月。也可以炼药出售。</div></div>
+    <div class="faq"><div class="faq-q"><span class="q">Q9</span>抓钩怎么用/怎么获得？<span class="chev">▾</span></div><div class="faq-a">抓钩（Grappling Hook）可从史莱姆王、史莱姆雨或地牢宝箱获得。装备后按右键/指定键发射钩爪，可钩住方块移动。搭配「滑翔翼」机动性更强。</div></div>
+    <div class="faq"><div class="faq-q"><span class="q">Q10</span>游戏有修改器/作弊吗？<span class="chev">▾</span></div><div class="faq-a">官方支持「旅程模式」（Journey Mode），可自由调整难度、复制物品、改变时间，是最正规的作弊手段，适合想轻松体验的玩家。不建议使用第三方外挂，有封号风险。</div></div>
+  </div>
+</section>
+
+
+<!-- MORE_SECTIONS -->
+
+<footer>
+  <div class="wrap">
+    泰拉瑞亚全流程攻略 · 攻略信息基于游戏常见版本整理，具体数值以你游玩的版本为准<br>
+    攻略仅供参考，祝矿工们早日击破月球领主
+  </div>
+</footer>
+
+<button id="top" title="回到顶部">↑</button>
+
+<script>
+/* 顶部导航高亮 + 回到顶部 + 进度条 */
+(function(){
+  var nav=document.getElementById('topnav'),links=nav.querySelectorAll('a'),secs=[];
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1);var el=document.getElementById(id);if(el)secs.push({a:a,el:el});});
+  var topBtn=document.getElementById('top'),prog=document.getElementById('progress');
+  function onScroll(){
+    var y=window.scrollY||document.documentElement.scrollTop;
+    prog.style.width=(y/(document.documentElement.scrollHeight-window.innerHeight)*100)+'%';
+    if(y>500)topBtn.style.display='flex';else topBtn.style.display='none';
+    var cur=null;
+    secs.forEach(function(s){if(s.el.offsetTop-y<=120)cur=s;});
+    links.forEach(function(a){a.classList.remove('on');});
+    if(cur)cur.a.classList.add('on');
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  topBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+})();
+
+/* BOSS 折叠 */
+document.addEventListener('click',function(e){
+  var h=e.target.closest('.boss-h');if(h){h.parentElement.classList.toggle('open');}
+  var q=e.target.closest('.faq-q');if(q){q.parentElement.classList.toggle('open');}
+});
+
+/* 进度清单 */
+(function(){
+  var items=[
+    {g:'肉山前 · 起步',t:'造出房屋并安置 3 名以上 NPC（向导、商人、护士）'},
+    {g:'肉山前 · 起步',t:'工作台、熔炉、铁砧全部建造完成'},
+    {g:'肉山前 · 起步',t:'铜/铁工具升级到金/铂金等级'},
+    {g:'肉山前 · Boss',t:'击败克苏鲁之眼'},
+    {g:'肉山前 · Boss',t:'击败史莱姆王'},
+    {g:'肉山前 · Boss',t:'击败世界吞噬者 / 克苏鲁之脑'},
+    {g:'肉山前 · Boss',t:'击败蜂后'},
+    {g:'肉山前 · Boss',t:'击败骷髅王（地牢守卫战）'},
+    {g:'肉山前 · Boss',t:'下到地狱，挖掘狱石做出熔岩装备'},
+    {g:'肉山前 · 转折',t:'击败血肉墙，进入困难模式'},
+    {g:'困难模式 · 起步',t:'用神锤敲碎恶魔/猩红祭坛，获得新三矿'},
+    {g:'困难模式 · 起步',t:'钴蓝/钯金 → 秘银/山铜 → 精金/钛金 工具装备'},
+    {g:'困难模式 · Boss',t:'击败毁灭者（机械蠕虫）'},
+    {g:'困难模式 · Boss',t:'击败双子魔眼'},
+    {g:'困难模式 · Boss',t:'击败机械骷髅王'},
+    {g:'困难模式 · Boss',t:'击败世纪之花（丛林深处）'},
+    {g:'困难模式 · Boss',t:'击败石巨人（丛林神庙）'},
+    {g:'困难模式 · Boss',t:'击败猪龙鱼公爵（可选）'},
+    {g:'困难模式 · Boss',t:'击败拜月教邪教徒'},
+    {g:'毕业',t:'击败天界柱（四柱）'},
+    {g:'毕业',t:'击败月球领主，通关游戏'}
+  ];
+  var box=document.getElementById('checklist'),fill=document.getElementById('progfill');
+  function render(){
+    box.innerHTML='';var done=0;
+    items.forEach(function(it,i){
+      var key='terraria_ck_'+i,on=localStorage.getItem(key)==='1';if(on)done++;
+      var d=document.createElement('label');d.className='check'+(on?' done':'');
+      d.innerHTML='<input type="checkbox"'+(on?' checked':'')+'><div class="lbl"><span class="grp">'+it.g+'</span>'+it.t+'</div>';
+      d.querySelector('input').addEventListener('change',function(){
+        localStorage.setItem(key,this.checked?'1':'0');
+        render();
+      });
+      box.appendChild(d);
+    });
+    fill.style.width=(done/items.length*100)+'%';
+  }
+  render();
+})();
+</script>
+</body>
+</html>
+<!-- （注：内容由AI生成） -->
